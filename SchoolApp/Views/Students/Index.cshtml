@@ -9,6 +9,11 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+    @* Option A: search with a button *@
+@* method="get" puts the search text in the address bar *@
+@* Option B: live search. No form and no button: it filters while you type *@
+<input type="text" id="searchBox" class="form-control mb-3"
+       placeholder="Live search - James" />
 <table class="table">
     <thead>
         <tr>
@@ -33,7 +38,7 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="studentRows">
 @foreach (var item in Model) {
         <tr>
             <td>
@@ -63,3 +68,24 @@
 }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        // Runs every time a key is typed in the search box
+        document.getElementById("searchBox").addEventListener("input", function () {
+            // What the user typed, in lowercase
+            const text = this.value.toLowerCase();
+
+            // Look at every row in the table
+            document.querySelectorAll("#studentRows tr").forEach(function (row) {
+                // Student No., Full Name and Email together
+                const rowText = (row.cells[0].textContent + " " +
+                    row.cells[1].textContent + " " +
+                    row.cells[2].textContent).toLowerCase();
+
+                // Show matching rows and hide nonmatching rows
+                row.style.display = rowText.includes(text) ? "" : "none";
+            });
+        });
+    </script>
+}
